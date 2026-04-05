@@ -1,12 +1,17 @@
 from rest_framework.decorators import api_view, permission_classes
+from django_api_readme.decorators import api_doc
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from .models import Cart, CartItem
-from .serializers import CartSerializer
+from .serializers import (
+    CartSerializer, AddCartInputSerializer, 
+    UpdateCartInputSerializer, RemoveCartInputSerializer
+)
 from products.models import Product
 
+@api_doc(None, CartSerializer, summary="Get Cart", description="Retrieve the authenticated user's cart.")
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_cart(request):
@@ -14,6 +19,7 @@ def get_cart(request):
     serializer = CartSerializer(cart)
     return Response(serializer.data)
 
+@api_doc(AddCartInputSerializer, CartSerializer, summary="Add to Cart", description="Add a product to the user's cart.")
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def add_to_cart(request):
@@ -53,6 +59,7 @@ def add_to_cart(request):
     serializer = CartSerializer(cart)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+@api_doc(UpdateCartInputSerializer, CartSerializer, summary="Update Cart Item", description="Update the quantity of an item in the cart.")
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def update_cart_item(request):
@@ -84,6 +91,7 @@ def update_cart_item(request):
     serializer = CartSerializer(cart)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+@api_doc(RemoveCartInputSerializer, CartSerializer, summary="Remove from Cart", description="Remove an item from the cart.")
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def remove_from_cart(request):

@@ -1,4 +1,5 @@
 from rest_framework.decorators import api_view, permission_classes
+from django_api_readme.decorators import api_doc
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
@@ -7,6 +8,7 @@ from .serializers import OrderSerializer
 from cart.models import Cart
 from decimal import Decimal
 
+@api_doc(None, OrderSerializer, summary="Create Order", description="Create a new order from items in the authenticated user's cart.")
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_order(request):
@@ -58,6 +60,7 @@ def create_order(request):
     serializer = OrderSerializer(order)
     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+@api_doc(None, OrderSerializer, summary="List Orders", description="Get a list of all orders for the authenticated user.")
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def order_list(request):
@@ -65,6 +68,7 @@ def order_list(request):
     serializer = OrderSerializer(orders, many=True)
     return Response(serializer.data)
 
+@api_doc(None, OrderSerializer, summary="Order Detail", description="Get details of a specific order.")
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def order_detail(request, pk):

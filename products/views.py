@@ -5,12 +5,21 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework import status
 from .models import Product
 from .serializers import ProductSerializer
+from django_api_readme.decorators import api_doc
+
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 12
     page_size_query_param = 'page_size'
     max_page_size = 100
 
+@api_doc(None, ProductSerializer, summary="List Products", description="Get a paginated list of active products with filtering and sorting.", query_params=[
+    {"name": "search", "description": "Search by title"},
+    {"name": "category", "description": "Filter by category slug(s)"},
+    {"name": "min_price", "description": "Minimum price"},
+    {"name": "max_price", "description": "Maximum price"},
+    {"name": "sort", "description": "Sort by price-asc, price-desc, or newest"}
+])
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def product_list(request):
@@ -58,6 +67,7 @@ def product_list(request):
     serializer = ProductSerializer(paginated_products, many=True)
     return paginator.get_paginated_response(serializer.data)
 
+@api_doc(None, ProductSerializer, summary="Search Products", description="Search products by title.", query_params=[{"name": "q", "description": "Search query"}])
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def product_search(request):
@@ -69,6 +79,7 @@ def product_search(request):
     serializer = ProductSerializer(paginated_products, many=True)
     return paginator.get_paginated_response(serializer.data)
 
+@api_doc(None, ProductSerializer, summary="Product Detail", description="Get full details of a specific product.")
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def product_detail(request, pk):
@@ -83,6 +94,7 @@ def product_detail(request, pk):
     serializer = ProductSerializer(product)
     return Response(serializer.data)
 
+@api_doc(None, ProductSerializer, summary="Featured Products", description="Get a list of featured products.")
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def featured_products(request):
@@ -90,6 +102,7 @@ def featured_products(request):
     serializer = ProductSerializer(products, many=True)
     return Response(serializer.data)
 
+@api_doc(None, ProductSerializer, summary="Latest Products", description="Get the most recently added products.")
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def latest_products(request):

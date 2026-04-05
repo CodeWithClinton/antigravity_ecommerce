@@ -1,13 +1,15 @@
 from rest_framework.decorators import api_view, permission_classes
+from django_api_readme.decorators import api_doc
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import get_user_model, authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import UserSerializer
+from .serializers import UserSerializer, RegisterInputSerializer, LoginInputSerializer
 
 User = get_user_model()
 
+@api_doc(RegisterInputSerializer, UserSerializer, summary="Register User", description="Create a new user account.")
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register_user(request):
@@ -31,6 +33,7 @@ def register_user(request):
     serializer = UserSerializer(user)
     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+@api_doc(LoginInputSerializer, summary="User Login", description="Authenticate a user and return JWT tokens along with user data.")
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login_user(request):

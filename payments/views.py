@@ -2,6 +2,7 @@ import os
 import uuid
 import requests
 from rest_framework.decorators import api_view, permission_classes
+from django_api_readme.decorators import api_doc
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
@@ -9,9 +10,11 @@ from django.shortcuts import get_object_or_404
 from django.db import transaction
 from orders.models import Order
 from .models import Payment
+from .serializers import InitiatePaymentInputSerializer, VerifyPaymentInputSerializer
 
 PAYSTACK_SECRET_KEY = os.environ.get('PAYSTACK_SECRET_KEY', 'sk_test_placeholder')
 
+@api_doc(InitiatePaymentInputSerializer, summary="Initiate Payment", description="Initialize a Paystack transaction for an order.")
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def initiate_payment(request):
@@ -74,6 +77,7 @@ def initiate_payment(request):
         'reference': reference
     }, status=status.HTTP_200_OK)
 
+@api_doc(VerifyPaymentInputSerializer, summary="Verify Payment", description="Verify a Paystack transaction status and update order status.")
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def verify_payment(request):

@@ -1,10 +1,12 @@
 from rest_framework.decorators import api_view, permission_classes
+from django_api_readme.decorators import api_doc
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Category
 from .serializers import CategorySerializer
 
+@api_doc(None, CategorySerializer, summary="List Categories", description="Get a list of all active categories.")
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def category_list(request):
@@ -12,6 +14,7 @@ def category_list(request):
     serializer = CategorySerializer(categories, many=True)
     return Response(serializer.data)
 
+@api_doc(None, CategorySerializer, summary="Category Detail", description="Get details of a specific category.")
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def category_detail(request, pk):

@@ -24,3 +24,14 @@ class CartSerializer(serializers.ModelSerializer):
 
     def get_total_amount(self, obj):
         return sum(item.quantity * item.product.price for item in obj.items.all())
+
+class AddCartInputSerializer(serializers.Serializer):
+    product_id = serializers.IntegerField()
+    quantity = serializers.IntegerField(default=1)
+
+class UpdateCartInputSerializer(serializers.Serializer):
+    item_id = serializers.IntegerField()
+    quantity = serializers.IntegerField()
+
+class RemoveCartInputSerializer(serializers.Serializer):
+    item_id = serializers.IntegerField()
